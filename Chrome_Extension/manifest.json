@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Web Extension",
+  "name": "webauthn-inspector",
   "version": "1.0",
   "permissions": [
     "tabs",
