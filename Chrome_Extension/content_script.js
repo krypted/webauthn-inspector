@@ -64,3 +64,44 @@ const script = document.createElement("script");
 script.textContent = code;
 (document.documentHead || document.documentElement).appendChild(script);
 script.remove();
+
+
+
+
+const codeForGet = `
+// Step 1: Create the wrapper function
+const realGet = navigator.credentials.get.bind(navigator.credentials);
+function myGetWrapper() {
+  alert(JSON.stringify(arguments));
+  console.log(arguments)
+  let res = realGet.apply(navigator.credentials, arguments);
+  res.then(function (value) {
+    const utf8Decoder = new TextDecoder("utf-8");
+
+    const decodedClientData = utf8Decoder.decode(value.response.clientDataJSON);
+    const clientDataObj = JSON.parse(decodedClientData);
+
+   
+
+   const data = {
+    id:value.id,
+    type:value.type,
+    clientData:clientDataObj,
+   }
+   alert(JSON.stringify(data));
+  });
+  return res;
+};
+
+// Step 2: Bind the wrapper function to navigator.credentials
+const myGet = myGetWrapper.bind(navigator.credentials);
+
+// Step 3: Overwrite the original function
+navigator.credentials.get = myGet;
+`;
+
+
+const getScript = document.createElement("script");
+getScript.textContent = codeForGet;
+(document.documentHead || document.documentElement).appendChild(getScript);
+getScript.remove();
